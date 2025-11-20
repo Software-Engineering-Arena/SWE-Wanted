@@ -23,6 +23,7 @@ load_dotenv()
 # =============================================================================
 
 AGENTS_REPO = "SWE-Arena/bot_data"  # HuggingFace dataset for agent metadata
+LEADERBOARD_FILENAME = f"{os.path.basename(os.getcwd())}.json"
 LEADERBOARD_REPO = "SWE-Arena/leaderboard_data"  # HuggingFace dataset for leaderboard data
 LONGSTANDING_GAP_DAYS = 30  # Minimum days for an issue to be considered long-standing
 MAX_RETRIES = 5
@@ -218,12 +219,11 @@ def load_leaderboard_data_from_hf():
     """Load leaderboard data, monthly metrics, and wanted issues from HuggingFace dataset."""
     try:
         token = get_hf_token()
-        filename = "swe-wanted.json"
 
         # Download file
         file_path = hf_hub_download_with_backoff(
             repo_id=LEADERBOARD_REPO,
-            filename=filename,
+            filename=LEADERBOARD_FILENAME,
             repo_type="dataset",
             token=token
         )

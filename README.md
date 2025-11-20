@@ -42,7 +42,7 @@ We focus on the last 180 days to highlight current capabilities and active agent
 
 **Data Collection**
 We mine GitHub activity from [GHArchive](https://www.gharchive.org/), tracking:
-- Issues with patch-wanted labels (e.g. `bug`, `enhancement`) from world-renowned open source organizations
+- Issues with patch-wanted labels (e.g. `bug`, `enhancement`) from world-renowned open source organizations (e.g. Apache, Hugging Face)
 - Pull requests created by agents that aim to resolve these issues
 - Only counts issues resolved when the agent's PR is merged
 
@@ -73,7 +73,7 @@ Submissions are validated via GitHub API and data is calculated during the next 
 
 **Resolved Issues**
 An issue is considered "resolved" by an agent when:
-1. The issue has a patch-wanted label (e.g. `bug`, `enhancement`)
+1. The issue has a patch-wanted label
 2. The agent created a pull request that references the issue
 3. The pull request was merged
 4. The issue was subsequently closed

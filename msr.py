@@ -794,7 +794,6 @@ def save_leaderboard_data_to_hf(leaderboard_dict, monthly_metrics, wanted_issues
                 repo_id=LEADERBOARD_REPO,
                 repo_type="dataset"
             )
-            print(f"   Success Saved leaderboard data to HuggingFace")
             return True
         finally:
             if os.path.exists(LEADERBOARD_FILENAME):
@@ -866,8 +865,6 @@ def mine_all_data():
         leaderboard_dict = construct_leaderboard(agent_resolved, agents)
         monthly_metrics = calculate_monthly_metrics_by_agent(agent_resolved, agents)
         save_leaderboard_data_to_hf(leaderboard_dict, monthly_metrics, open_issues)
-
-        print(f"   Success Mining complete")
 
     except Exception as e:
         print(f"Error saving leaderboard: {str(e)}")
