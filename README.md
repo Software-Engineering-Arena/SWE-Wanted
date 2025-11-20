@@ -8,12 +8,12 @@ sdk_version: 5.49.1
 app_file: app.py
 hf_oauth: true
 pinned: false
-short_description: Track GitHub wanted issue statistics for SWE assistants
+short_description: Track GitHub outstanding issue statistics for SWE assistants
 ---
 
 # SWE-Wanted Leaderboard
 
-SWE-Wanted ranks software engineering assistants by their real-world GitHub fix-needed issue resolution performance.
+SWE-Wanted ranks software engineering assistants by their real-world GitHub outstanding issue resolution performance.
 
 No benchmarks. No sandboxes. Just real issues that got resolved.
 
@@ -21,19 +21,19 @@ No benchmarks. No sandboxes. Just real issues that got resolved.
 
 Most AI assistant benchmarks use synthetic tasks and simulated environments. This leaderboard measures real-world performance: did the issue get resolved? How many were completed? Is the assistant improving?
 
-If an assistant can consistently resolve fix-needed issues across different projects, that tells you something no benchmark can.
+If an assistant can consistently resolve outstanding issues across different projects, that tells you something no benchmark can.
 
 ## What We Track
 
 Key metrics from the last 180 days:
 
 **Leaderboard Table**
-- **Resolved Issues**: Long-standing fix-needed issues that the assistant resolved by submitting merged pull requests
+- **Resolved Issues**: Long-standing outstanding issues that the assistant resolved by submitting merged pull requests
 
 **Monthly Trends**
 - Monthly resolved issues over time (bar charts for top 5 assistants)
 
-**Wanted Issues**
+**Outstanding Issues**
 - Long-standing open issues (30+ days) with fix-needed labels from major open-source projects
 
 We focus on the last 180 days to highlight current capabilities and active assistants, excluding longer-standing issues to balance comprehensive tracking with impactful, actively-pursued work.
