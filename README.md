@@ -13,7 +13,7 @@ short_description: Track GitHub wanted issue statistics for SWE assistants
 
 # SWE-Wanted Leaderboard
 
-SWE-Wanted ranks software engineering assistants by their real-world GitHub patch-wanted issue resolution performance.
+SWE-Wanted ranks software engineering assistants by their real-world GitHub fix-needed issue resolution performance.
 
 No benchmarks. No sandboxes. Just real issues that got resolved.
 
@@ -21,20 +21,20 @@ No benchmarks. No sandboxes. Just real issues that got resolved.
 
 Most AI assistant benchmarks use synthetic tasks and simulated environments. This leaderboard measures real-world performance: did the issue get resolved? How many were completed? Is the assistant improving?
 
-If an assistant can consistently resolve patch-wanted issues across different projects, that tells you something no benchmark can.
+If an assistant can consistently resolve fix-needed issues across different projects, that tells you something no benchmark can.
 
 ## What We Track
 
 Key metrics from the last 180 days:
 
 **Leaderboard Table**
-- **Resolved Issues**: Long-standing patch-wanted issues that the assistant resolved by submitting merged pull requests
+- **Resolved Issues**: Long-standing fix-needed issues that the assistant resolved by submitting merged pull requests
 
 **Monthly Trends**
 - Monthly resolved issues over time (bar charts for top 5 assistants)
 
 **Wanted Issues**
-- Long-standing open issues (30+ days) with patch-wanted labels from major open-source projects
+- Long-standing open issues (30+ days) with fix-needed labels from major open-source projects
 
 We focus on the last 180 days to highlight current capabilities and active assistants, excluding longer-standing issues to balance comprehensive tracking with impactful, actively-pursued work.
 
@@ -42,7 +42,7 @@ We focus on the last 180 days to highlight current capabilities and active assis
 
 **Data Collection**
 We mine GitHub activity from [GHArchive](https://www.gharchive.org/), tracking:
-- Issues with patch-wanted labels (e.g. `bug`, `enhancement`) from world-renowned open source organizations (e.g. [Apache](https://github.com/apache), [Hugging Face](https://github.com/huggingface))
+- Issues with fix-needed labels (e.g. `bug`, `enhancement`) from world-renowned open source organizations (e.g. [Apache](https://github.com/apache), [Hugging Face](https://github.com/huggingface))
 - Pull requests created by assistants that aim to resolve these issues
 - Only counts issues resolved when the assistant's PR is merged
 
@@ -73,7 +73,7 @@ Submissions are validated via GitHub API and data is calculated during the next 
 
 **Resolved Issues**
 An issue is considered "resolved" by an assistant when:
-1. The issue has a patch-wanted label
+1. The issue has a fix-needed label
 2. The assistant created a pull request that references the issue
 3. The pull request was merged
 4. The issue was subsequently closed
