@@ -23,7 +23,7 @@ load_dotenv()
 # =============================================================================
 
 AGENTS_REPO = "SWE-Arena/bot_data"  # HuggingFace dataset for agent metadata
-LEADERBOARD_FILENAME = f"{os.path.basename(os.getcwd())}.json"
+LEADERBOARD_FILENAME = f"{os.getenv('COMPOSE_PROJECT_NAME')}.json"
 LEADERBOARD_REPO = "SWE-Arena/leaderboard_data"  # HuggingFace dataset for leaderboard data
 LONGSTANDING_GAP_DAYS = 30  # Minimum days for an issue to be considered long-standing
 MAX_RETRIES = 5
