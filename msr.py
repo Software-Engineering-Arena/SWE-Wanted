@@ -537,30 +537,30 @@ def fetch_issue_metadata_streaming(conn, identifiers, start_date, end_date):
                     'labels': label_names
                 }
 
-            # Query 2: Find PRs (from IssueCommentEvent where issue.pull_request exists)
-            # and PullRequestEvent to get creator and merge status
-            # Now reading from batch_data temp view instead of files
+            # Query 2: Find PRs from both IssueCommentEvent (with PR metadata) and PullRequestEvent
+            # OPTIMIZED: Single scan using COALESCE to handle both event types efficiently
             pr_query = """
             SELECT DISTINCT
-                json_extract_string(payload, '$.issue.html_url') as pr_url,
-                json_extract_string(payload, '$.issue.user.login') as pr_creator,
-                json_extract_string(payload, '$.issue.pull_request.merged_at') as merged_at,
-                json_extract_string(payload, '$.issue.body') as pr_body
+                COALESCE(
+                    json_extract_string(payload, '$.issue.html_url'),
+                    json_extract_string(payload, '$.pull_request.html_url')
+                ) as pr_url,
+                COALESCE(
+                    json_extract_string(payload, '$.issue.user.login'),
+                    json_extract_string(payload, '$.pull_request.user.login')
+                ) as pr_creator,
+                COALESCE(
+                    json_extract_string(payload, '$.issue.pull_request.merged_at'),
+                    json_extract_string(payload, '$.pull_request.merged_at')
+                ) as merged_at,
+                COALESCE(
+                    json_extract_string(payload, '$.issue.body'),
+                    json_extract_string(payload, '$.pull_request.body')
+                ) as pr_body
             FROM batch_data
             WHERE
-                type = 'IssueCommentEvent'
-                AND json_extract_string(payload, '$.issue.pull_request') IS NOT NULL
-                AND json_extract_string(payload, '$.issue.html_url') IS NOT NULL
-            UNION ALL
-            SELECT DISTINCT
-                json_extract_string(payload, '$.pull_request.html_url') as pr_url,
-                json_extract_string(payload, '$.pull_request.user.login') as pr_creator,
-                json_extract_string(payload, '$.pull_request.merged_at') as merged_at,
-                json_extract_string(payload, '$.pull_request.body') as pr_body
-            FROM batch_data
-            WHERE
-                type = 'PullRequestEvent'
-                AND json_extract_string(payload, '$.pull_request.html_url') IS NOT NULL
+                (type = 'IssueCommentEvent' AND json_extract_string(payload, '$.issue.pull_request') IS NOT NULL)
+                OR type = 'PullRequestEvent'
             """
 
             pr_results = conn.execute(pr_query).fetchall()
