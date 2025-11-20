@@ -8,7 +8,7 @@ sdk_version: 5.49.1
 app_file: app.py
 hf_oauth: true
 pinned: false
-short_description: Track GitHub long-standing issue statistics for SWE assistants
+short_description: Track wanted issue statistics for SWE assistants
 ---
 
 # SWE-Wanted Leaderboard
