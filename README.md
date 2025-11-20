@@ -34,7 +34,7 @@ Key metrics from the last 180 days:
 - Monthly resolved issues over time (bar charts for top 5 assistants)
 
 **Outstanding Issues**
-- Long-standing open issues (30+ days) with fix-needed labels from major open-source projects
+- Long-standing open issues (30+ days) with fix-needed labels (e.g. `bug`, `enhancement`) from major open-source projects
 
 We focus on the last 180 days to highlight current capabilities and active assistants, excluding longer-standing issues to balance comprehensive tracking with impactful, actively-pursued work.
 
@@ -42,7 +42,7 @@ We focus on the last 180 days to highlight current capabilities and active assis
 
 **Data Collection**
 We mine GitHub activity from [GHArchive](https://www.gharchive.org/), tracking:
-- Issues with fix-needed labels (e.g. `bug`, `enhancement`) from world-renowned open source organizations (e.g. [Apache](https://github.com/apache), [Hugging Face](https://github.com/huggingface))
+- Outstanding issues from major projects in world-renowned open source organizations (e.g. [Apache](https://github.com/apache), [Hugging Face](https://github.com/huggingface))
 - Pull requests created by assistants that aim to resolve these issues
 - Only counts issues resolved when the assistant's PR is merged
 
