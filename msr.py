@@ -466,13 +466,13 @@ def fetch_issue_metadata_streaming(conn, identifiers, start_date, end_date):
 
             # Query 1: Fetch all issues (NOT PRs) from IssuesEvent and IssueCommentEvent
             # Note: In GHArchive, if payload.issue.pull_request exists, it's a PR, not an issue
+            # Note: We don't group by state to avoid duplicates - state is determined by closed_at
             issue_query = """
             SELECT
                 json_extract_string(payload, '$.issue.html_url') as issue_url,
                 json_extract_string(repo, '$.name') as repo_name,
                 json_extract_string(payload, '$.issue.title') as title,
                 json_extract_string(payload, '$.issue.number') as issue_number,
-                json_extract_string(payload, '$.issue.state') as state,
                 MIN(json_extract_string(payload, '$.issue.created_at')) as created_at,
                 MAX(json_extract_string(payload, '$.issue.closed_at')) as closed_at,
                 json_extract(payload, '$.issue.labels') as labels
@@ -481,7 +481,7 @@ def fetch_issue_metadata_streaming(conn, identifiers, start_date, end_date):
                 type IN ('IssuesEvent', 'IssueCommentEvent')
                 AND json_extract_string(payload, '$.issue.pull_request') IS NULL
                 AND json_extract_string(payload, '$.issue.html_url') IS NOT NULL
-            GROUP BY issue_url, repo_name, title, issue_number, state, labels
+            GROUP BY issue_url, repo_name, title, issue_number, labels
             """
 
             issue_results = conn.execute(issue_query).fetchall()
@@ -492,10 +492,9 @@ def fetch_issue_metadata_streaming(conn, identifiers, start_date, end_date):
                 repo_name = row[1]  # Format: "apache/kafka"
                 title = row[2]
                 issue_number = row[3]
-                state = row[4]
-                created_at = row[5]
-                closed_at = row[6]
-                labels_json = row[7]
+                created_at = row[4]
+                closed_at = row[5]
+                labels_json = row[6]
 
                 if not issue_url or not repo_name:
                     continue
@@ -525,6 +524,10 @@ def fetch_issue_metadata_streaming(conn, identifiers, start_date, end_date):
                 except (json.JSONDecodeError, TypeError):
                     label_names = []
 
+                # Determine state based on closed_at (if closed_at is set, issue is closed)
+                normalized_closed_at = normalize_date_format(closed_at) if closed_at else None
+                state = 'closed' if (normalized_closed_at and normalized_closed_at != 'N/A') else 'open'
+
                 # Store issue metadata (no label filtering at this stage)
                 all_issues[issue_url] = {
                     'url': issue_url,
@@ -533,7 +536,7 @@ def fetch_issue_metadata_streaming(conn, identifiers, start_date, end_date):
                     'number': issue_number,
                     'state': state,
                     'created_at': normalize_date_format(created_at),
-                    'closed_at': normalize_date_format(closed_at) if closed_at else None,
+                    'closed_at': normalized_closed_at,
                     'labels': label_names
                 }
 
@@ -668,8 +671,16 @@ def fetch_issue_metadata_streaming(conn, identifiers, start_date, end_date):
                     pass
 
         elif issue_meta['state'] == 'closed':
-            # For closed issues with merged PRs: labels don't matter, add directly
-            agent_resolved[resolved_by].append(issue_meta)
+            # For closed issues with merged PRs: labels don't matter, but must be closed within time frame
+            closed_at_str = issue_meta.get('closed_at')
+            if closed_at_str and closed_at_str != 'N/A':
+                try:
+                    closed_dt = datetime.fromisoformat(closed_at_str.replace('Z', '+00:00'))
+                    # Only include if closed within the LEADERBOARD_TIME_FRAME_DAYS
+                    if start_date <= closed_dt <= end_date:
+                        agent_resolved[resolved_by].append(issue_meta)
+                except:
+                    pass
 
     print(f"   Success Found {len(open_issues)} long-standing open issues")
     print(f"   Success Found {sum(len(issues) for issues in agent_resolved.values())} resolved issues across {len(agent_resolved)} agents")
