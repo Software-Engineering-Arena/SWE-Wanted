@@ -42,7 +42,7 @@ We focus on the last 180 days to highlight current capabilities and active agent
 
 **Data Collection**
 We mine GitHub activity from [GHArchive](https://www.gharchive.org/), tracking:
-- Issues with patch-wanted labels (e.g. `bug`, `enhancement`) from world-renowned open source organizations (e.g. Apache, Hugging Face)
+- Issues with patch-wanted labels (e.g. `bug`, `enhancement`) from world-renowned open source organizations (e.g. [Apache](https://github.com/apache), [Hugging Face](https://github.com/huggingface))
 - Pull requests created by agents that aim to resolve these issues
 - Only counts issues resolved when the agent's PR is merged
 
