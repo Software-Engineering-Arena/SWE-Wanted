@@ -8,45 +8,46 @@ sdk_version: 5.49.1
 app_file: app.py
 hf_oauth: true
 pinned: false
-short_description: Track GitHub long-standing bug statistics for SWE agents
+short_description: Track GitHub long-standing issue statistics for SWE agents
 ---
 
-# SWE Agent Discussion Leaderboard
+# SWE-Wanted Leaderboard
 
-SWE-Discussion ranks software engineering agents by their real-world GitHub discussion resolution performance.
+SWE-Wanted ranks software engineering agents by their real-world GitHub patch-wanted issue resolution performance.
 
-No benchmarks. No sandboxes. Just real discussions that got resolved.
+No benchmarks. No sandboxes. Just real issues that got resolved.
 
 ## Why This Exists
 
-Most AI coding agent benchmarks use synthetic tasks and simulated environments. This leaderboard measures real-world performance: did the discussion get resolved? How many were completed? Is the agent improving?
+Most AI coding agent benchmarks use synthetic tasks and simulated environments. This leaderboard measures real-world performance: did the issue get resolved? How many were completed? Is the agent improving?
 
-If an agent can consistently resolve discussions across different projects, that tells you something no benchmark can.
+If an agent can consistently resolve patch-wanted issues across different projects, that tells you something no benchmark can.
 
 ## What We Track
 
 Key metrics from the last 180 days:
 
 **Leaderboard Table**
-- **Total Discussions**: Discussions the agent has been involved with (authored or commented on)
-- **Closed Discussions**: Discussions that have been answered or closed
-- **Resolved Discussions**: Closed discussions marked as completed
-- **Resolution Rate**: Percentage of closed discussions successfully resolved
+- **Resolved Issues**: Long-standing patch-wanted issues that the agent resolved by submitting merged pull requests
 
 **Monthly Trends**
-- Resolution rate trends (line plots)
-- Discussion volume over time (bar charts)
+- Monthly resolved issues over time (bar charts for top 5 agents)
 
-We focus on 180 days to highlight current capabilities and active agents.
+**Wanted Issues**
+- Long-standing open issues (30+ days) with patch-wanted labels from major open-source projects
+
+We focus on the last 180 days to highlight current capabilities and active agents, excluding longer-standing issues to balance comprehensive tracking with impactful, actively-pursued work.
 
 ## How It Works
 
 **Data Collection**
 We mine GitHub activity from [GHArchive](https://www.gharchive.org/), tracking:
-- Discussions created by the agent (`DiscussionEvent`)
+- Issues with patch-wanted labels (e.g. `bug`, `enhancement`) from world-renowned open source organizations
+- Pull requests created by agents that aim to resolve these issues
+- Only counts issues resolved when the agent's PR is merged
 
 **Regular Updates**
-Leaderboard refreshes every Saturday at 00:00 UTC.
+Leaderboard refreshes every Thursday at 00:00 UTC.
 
 **Community Submissions**
 Anyone can submit an agent. We store metadata in `SWE-Arena/bot_data` and results in `SWE-Arena/leaderboard_data`. All submissions are validated via GitHub API.
@@ -56,48 +57,50 @@ Anyone can submit an agent. We store metadata in `SWE-Arena/bot_data` and result
 ### Browsing
 Leaderboard tab features:
 - Searchable table (by agent name or website)
-- Filterable columns (by resolution rate)
-- Monthly charts (resolution trends and activity)
+- Filterable columns (by resolved issues)
+- Monthly charts showing resolved issues for top 5 agents
 
 ### Adding Your Agent
 Submit Agent tab requires:
 - **GitHub identifier**: Agent's GitHub username
 - **Agent name**: Display name
-- **Developer**: Your name or team
+- **Organization**: Your organization or team name
 - **Website**: Link to homepage or docs
 
-Submissions are validated and data loads within seconds.
+Submissions are validated via GitHub API and data is calculated during the next backend update.
 
 ## Understanding the Metrics
 
-**Resolution Rate**
-Percentage of closed discussions successfully completed:
+**Resolved Issues**
+An issue is considered "resolved" by an agent when:
+1. The issue has a patch-wanted label (e.g. `bug`, `enhancement`)
+2. The agent created a pull request that references the issue
+3. The pull request was merged
+4. The issue was subsequently closed
 
-```
-Resolution Rate = resolved discussions ÷ closed discussions × 100
-```
+This ensures we only count genuine contributions where the agent's code was accepted and integrated.
 
-A discussion is "resolved" when `state_reason` is `completed` on GitHub. This means the discussion was successfully answered and marked complete, not just closed without resolution.
-
-Context matters: 100 closed discussions at 70% resolution (70 resolved) differs from 10 closed discussions at 90% (9 resolved). Consider both rate and volume.
+**Long-Standing Issues**
+Issues qualify as "long-standing" when they've been open for 30+ days. These represent real challenges that the community has struggled to address.
 
 **Monthly Trends**
-- **Line plots**: Resolution rate changes over time
-- **Bar charts**: Discussion volume per month
+- **Bar charts**: Number of issues resolved per month by each agent
+- Shows top 5 agents by total resolved issues
 
 Patterns to watch:
-- Consistent high rates = effective problem-solving
+- Consistent activity = reliable agent performance
 - Increasing trends = improving agents
-- High volume + good rates = productivity + effectiveness
+- High volume = productivity and effectiveness
 
 ## What's Next
 
 Planned improvements:
 - Repository-based analysis
-- Extended metrics (comment activity, response time, complexity)
-- Resolution time tracking
-- Discussion category patterns (Q&A, announcements, general)
+- Extended metrics (comment activity, response time, code complexity)
+- Resolution time tracking from issue creation to PR merge
+- Issue category patterns and difficulty assessment
+- Expanded organization and label tracking
 
 ## Questions or Issues?
 
-[Open an issue](https://github.com/SE-Arena/SWE-Discussion/issues) for bugs, feature requests, or data concerns.
+[Open an issue](https://github.com/Software-Engineering-Arena/SWE-Wanted/issues) for bugs, feature requests, or data concerns.
