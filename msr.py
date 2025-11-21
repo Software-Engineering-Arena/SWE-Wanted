@@ -153,7 +153,7 @@ def download_all_gharchive_data():
     """Download all GHArchive data files for the last LEADERBOARD_TIME_FRAME_DAYS."""
     os.makedirs(GHARCHIVE_DATA_LOCAL_PATH, exist_ok=True)
 
-    end_date = datetime.now()
+    end_date = datetime.now(timezone.utc)
     start_date = end_date - timedelta(days=LEADERBOARD_TIME_FRAME_DAYS)
 
     urls = []
@@ -671,13 +671,23 @@ def fetch_issue_metadata_streaming(conn, identifiers, start_date, end_date):
                     pass
 
         elif issue_meta['state'] == 'closed':
-            # For closed issues with merged PRs: labels don't matter, but must be closed within time frame
+            # For closed issues with merged PRs: must be closed within time frame
+            # AND must have been open for at least LONGSTANDING_GAP_DAYS before being closed
             closed_at_str = issue_meta.get('closed_at')
-            if closed_at_str and closed_at_str != 'N/A':
+            created_at_str = issue_meta.get('created_at')
+
+            if closed_at_str and closed_at_str != 'N/A' and created_at_str and created_at_str != 'N/A':
                 try:
                     closed_dt = datetime.fromisoformat(closed_at_str.replace('Z', '+00:00'))
-                    # Only include if closed within the LEADERBOARD_TIME_FRAME_DAYS
-                    if start_date <= closed_dt <= end_date:
+                    created_dt = datetime.fromisoformat(created_at_str.replace('Z', '+00:00'))
+
+                    # Calculate how long the issue was open
+                    days_open = (closed_dt - created_dt).days
+
+                    # Only include if:
+                    # 1. Closed within the LEADERBOARD_TIME_FRAME_DAYS
+                    # 2. Was open for at least LONGSTANDING_GAP_DAYS (long-standing issue)
+                    if start_date <= closed_dt <= end_date and days_open >= LONGSTANDING_GAP_DAYS:
                         agent_resolved[resolved_by].append(issue_meta)
                 except:
                     pass
@@ -851,7 +861,7 @@ def mine_all_data():
         return
 
     current_time = datetime.now(timezone.utc)
-    end_date = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_date = current_time  # Include all of today up to now
     start_date = end_date - timedelta(days=LEADERBOARD_TIME_FRAME_DAYS)
 
     try:
