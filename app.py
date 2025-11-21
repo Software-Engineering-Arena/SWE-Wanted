@@ -126,8 +126,8 @@ def load_agents_from_hf():
                 with open(file_path, 'r') as f:
                     agent_data = json.load(f)
 
-                    # Only process agents with status == "public"
-                    if agent_data.get('status') != 'public':
+                    # Only process agents with status == "active"
+                    if agent_data.get('status') != 'active':
                         continue
 
                     # Extract github_identifier from filename
@@ -506,7 +506,7 @@ def submit_agent(identifier, agent_name, organization, website):
         'organization': organization,
         'github_identifier': identifier,
         'website': website,
-        'status': 'public'
+        'status': 'active'
     }
 
     # Save to HuggingFace
